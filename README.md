@@ -1,20 +1,15 @@
-@protobufjs/utf8
-================
-[![npm](https://img.shields.io/npm/v/@protobufjs/utf8.svg)](https://www.npmjs.com/package/@protobufjs/utf8)
+# Installation
+> `npm install --save @types/node`
 
-A minimal UTF8 implementation for number arrays.
+# Summary
+This package contains type definitions for node (https://nodejs.org/).
 
-API
----
+# Details
+Files were exported from https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node.
 
-* **utf8.length(string: `string`): `number`**<br />
-  Calculates the UTF8 byte length of a string.
+### Additional Details
+ * Last updated: Sat, 19 Sep 2026 00:09:37 GMT
+ * Dependencies: [undici-types](https://npmjs.com/package/undici-types)
 
-* **utf8.read(buffer: `Uint8Array`, start: `number`, end: `number`): `string`**<br />
-  Reads UTF8 bytes as a string.
-
-* **utf8.write(string: `string`, buffer: `Uint8Array`, offset: `number`): `number`**<br />
-  Writes a string as UTF8 bytes.
-
-
-**License:** [BSD 3-Clause License](https://opensource.org/licenses/BSD-3-Clause)
+# Credits
+These definitions were written by [Microsoft TypeScript](https://github.com/Microsoft), [Alberto Schiabel](https://github.com/jkomyno), [Andrew Makarov](https://github.com/r3nya), [Benjamin Toueg](https://github.com/btoueg), [David Junger](https://github.com/touffy), [Mohsen Azimi](https://github.com/mohsen1), [Nikita Galkin](https://github.com/galkin), [Sebastian Silbermann](https://github.com/eps1lon), [Wilco Bakker](https://github.com/WilcoBakker), [Trivikram Kamat](https://github.com/trivikr), [Junxiao Shi](https://github.com/yoursunny), [ExE Boss](https://github.com/ExE-Boss), [Piotr Błażejewicz](https://github.com/peterblazejewicz), [Anna Henningsen](https://github.com/addaleax), [NodeJS Contributors](https://github.com/NodeJS), [Linus Unnebäck](https://github.com/LinusU), [wafuwafu13](https://github.com/wafuwafu13), [Matteo Collina](https://github.com/mcollina), [Dmitry Semigradsky](https://github.com/Semigradsky), [René](https://github.com/Renegade334), and [Yagiz Nizipli](https://github.com/anonrig).
