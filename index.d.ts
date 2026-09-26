@@ -1,144 +1,89 @@
-import { BufferEncoding } from './runtime'
+import { AbortSignal } from 'bare-abort-controller'
 
-export function isBuffer(value: unknown): value is Uint8Array
+interface EventMap {
+  [event: string | symbol]: unknown[]
+}
 
-export function isEncoding(encoding: unknown): encoding is BufferEncoding
+interface EventHandler<in A extends unknown[] = unknown[], out R = unknown> {
+  (...args: A): R
+}
 
-export function alloc(size: number, fill: string, encoding?: BufferEncoding): Uint8Array
-export function alloc(size: number, fill?: Uint8Array | number | boolean): Uint8Array
+declare class EventEmitterError extends Error {
+  static OPERATION_ABORTED(cause: Error, msg?: string): EventEmitterError
+  static UNHANDLED_ERROR(cause: Error, msg?: string): EventEmitterError
+}
 
-export function allocUnsafe(size: number): Uint8Array
+interface EventEmitter<in out M extends Record<keyof M, unknown[]> = EventMap> {
+  addListener<E extends keyof M>(name: E, fn: EventHandler<M[E]>): this
 
-export function allocUnsafeSlow(size: number): Uint8Array
+  addOnceListener<E extends keyof M>(name: E, fn: EventHandler<M[E]>): this
 
-export function byteLength(
-  string: ArrayBufferView | ArrayBufferLike | string,
-  encoding?: BufferEncoding
-): number
+  prependListener<E extends keyof M>(name: E, fn: EventHandler<M[E]>): this
 
-export function compare(a: Uint8Array, b: Uint8Array): number
+  prependOnceListener<E extends keyof M>(name: E, fn: EventHandler<M[E]>): this
 
-export function concat<T extends Uint8Array>(buffers: T[], totalLength?: number): Uint8Array
+  removeListener<E extends keyof M>(name: E, fn: EventHandler<M[E]>): this
 
-export function copy(
-  source: Uint8Array,
-  target: Uint8Array,
-  targetStart?: number,
-  start?: number,
-  end?: number
-): number
+  removeAllListeners<E extends keyof M>(name?: E): this
 
-export function equals(a: Uint8Array, b: Uint8Array): boolean
+  on<E extends keyof M>(name: E, fn: EventHandler<M[E]>): this
 
-export function fill<T extends Uint8Array>(buffer: T, value: string, encoding?: BufferEncoding): T
-export function fill<T extends Uint8Array>(
-  buffer: T,
-  value: string,
-  offset?: number,
-  encoding?: BufferEncoding
-): T
-export function fill<T extends Uint8Array>(
-  buffer: T,
-  value: string,
-  offset?: number,
-  end?: number,
-  encoding?: BufferEncoding
-): T
-export function fill<T extends Uint8Array>(
-  buffer: T,
-  value: Uint8Array | number | boolean,
-  offset?: number,
-  end?: number
-): T
+  once<E extends keyof M>(name: E, fn: EventHandler<M[E]>): this
 
-export function from(value: Iterable<number>): Uint8Array
-export function from(value: ArrayLike<number>): Uint8Array
-export function from(value: string, encodingOrOffset?: BufferEncoding): Uint8Array
-export function from(value: ArrayBufferLike, encodingOrOffset?: number, length?: number): Uint8Array
+  off<E extends keyof M>(name: E, fn: EventHandler<M[E]>): this
 
-export function includes(buffer: Uint8Array, value: string, encoding?: BufferEncoding): boolean
-export function includes(
-  buffer: Uint8Array,
-  value: string,
-  offset?: number,
-  encoding?: BufferEncoding
-): boolean
-export function includes(
-  buffer: Uint8Array,
-  value: Uint8Array | number | boolean,
-  offset?: number
-): boolean
+  emit<E extends keyof M>(name: E, ...args: M[E]): boolean
 
-export function indexOf(buffer: Uint8Array, value: string, encoding?: BufferEncoding): number
-export function indexOf(
-  buffer: Uint8Array,
-  value: string,
-  byfeOffset?: number,
-  encoding?: BufferEncoding
-): number
-export function indexOf(
-  buffer: Uint8Array,
-  value: Uint8Array | number | boolean,
-  byfeOffset?: number
-): number
+  listeners<E extends keyof M>(name: E): EventHandler<M[E]>[]
 
-export function lastIndexOf(buffer: Uint8Array, value: string, encoding?: BufferEncoding): number
-export function lastIndexOf(
-  buffer: Uint8Array,
-  value: string,
-  offset?: number,
-  encoding?: BufferEncoding
-): number
-export function lastIndexOf(
-  buffer: Uint8Array,
-  value: Uint8Array | number | boolean,
-  offset?: number
-): number
+  rawListeners<E extends keyof M>(name: E): EventHandler<M[E]>[]
 
-export function swap16<T extends Uint8Array>(buffer: T): T
-export function swap32<T extends Uint8Array>(buffer: T): T
-export function swap64<T extends Uint8Array>(buffer: T): T
+  eventNames(): (keyof M)[]
 
-export function toBuffer(buffer: Uint8Array): Uint8Array
+  listenerCount<E extends keyof M>(name: E): number
 
-export function toString(
-  buffer: Uint8Array,
-  encoding?: BufferEncoding,
-  start?: number,
-  end?: number
-): string
+  getMaxListeners(): number
+  setMaxListeners(n: number): this
+}
 
-export function toHex(buffer: Uint8Array, start?: number, end?: number): string
+declare class EventEmitter<in out M extends Record<keyof M, unknown[]> = EventMap> {}
 
-export function write(buffer: Uint8Array, string: string, encoding?: BufferEncoding): number
-export function write(
-  buffer: Uint8Array,
-  string: string,
-  offset?: number,
-  encoding?: BufferEncoding
-): number
-export function write(
-  buffer: Uint8Array,
-  string: string,
-  offset?: number,
-  length?: number,
-  encoding?: BufferEncoding
-): number
+declare namespace EventEmitter {
+  export function on<M extends Record<keyof M, unknown[]>, E extends keyof M>(
+    emitter: EventEmitter<M>,
+    name: E,
+    opts?: { signal?: AbortSignal }
+  ): AsyncIterableIterator<M[E]>
 
-export function readDoubleBE(buffer: Uint8Array, offset?: number): number
-export function readDoubleLE(buffer: Uint8Array, offset?: number): number
-export function readFloatBE(buffer: Uint8Array, offset?: number): number
-export function readFloatLE(buffer: Uint8Array, offset?: number): number
-export function readInt32BE(buffer: Uint8Array, offset?: number): number
-export function readInt32LE(buffer: Uint8Array, offset?: number): number
-export function readUInt32BE(buffer: Uint8Array, offset?: number): number
-export function readUInt32LE(buffer: Uint8Array, offset?: number): number
+  export function once<M extends Record<keyof M, unknown[]>, E extends keyof M>(
+    emitter: EventEmitter<M>,
+    name: E,
+    opts?: { signal?: AbortSignal }
+  ): Promise<M[E]>
 
-export function writeDoubleBE(buffer: Uint8Array, value: number, offset?: number): number
-export function writeDoubleLE(buffer: Uint8Array, value: number, offset?: number): number
-export function writeFloatBE(buffer: Uint8Array, value: number, offset?: number): number
-export function writeFloatLE(buffer: Uint8Array, value: number, offset?: number): number
-export function writeInt32BE(buffer: Uint8Array, value: number, offset?: number): number
-export function writeInt32LE(buffer: Uint8Array, value: number, offset?: number): number
-export function writeUInt32BE(buffer: Uint8Array, value: number, offset?: number): number
-export function writeUInt32LE(buffer: Uint8Array, value: number, offset?: number): number
+  export function forward<
+    F extends Record<keyof F, unknown[]>,
+    E extends keyof F,
+    T extends Record<keyof T, unknown[]> & Pick<F, E>
+  >(
+    from: EventEmitter<F>,
+    to: EventEmitter<T>,
+    names: E | E[],
+    opts?: { emit?: (name: E, ...args: T[E]) => void }
+  ): void
+
+  export function listenerCount<M extends Record<keyof M, unknown[]>, E extends keyof M>(
+    emitter: EventEmitter<M>,
+    name: E
+  ): number
+
+  export function getMaxListeners(emitter: EventEmitter<any>): number
+
+  export function setMaxListeners(n: number, ...emitters: EventEmitter<any>[]): void
+
+  export let defaultMaxListeners: number
+
+  export { EventEmitter, EventEmitterError as errors, EventMap, EventHandler }
+}
+
+export = EventEmitter
