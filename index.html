@@ -1,251 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LensAI — Reverse Image Search (Google Lens Engine)</title>
-  <meta name="description" content="High-accuracy reverse image search web application powered by Google Lens Engine & SerpApi. Identify anime, characters, public figures, and web sources." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body class="dark-theme">
-  <!-- Top Navigation Bar -->
-  <header class="navbar">
-    <div class="nav-container">
-      <div class="brand">
-        <div class="lens-logo">
-          <svg class="lens-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10" />
-            <path d="m14.5 9-5 5" />
-            <circle cx="12" cy="12" r="3" />
-            <path d="M12 2v2m0 16v2M2 12h2m16 0h2" />
-          </svg>
-        </div>
-        <div class="brand-text">
-          <span class="brand-title">LensAI <span class="badge-tag">Lens Engine</span></span>
-          <span class="brand-subtitle">Reverse Image & Public Source Search</span>
-        </div>
-      </div>
+<html lang="en" class="theme-light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DIGITAL YOUR — Discover Where Images Appear Across Public Sources</title>
+    <meta
+      name="description"
+      content="DIGITAL YOUR is a privacy-conscious reverse image discovery platform. Search openly accessible and publicly indexed web sources without claims of biometric identification or surveillance."
+    />
+    <meta name="keywords" content="reverse image search, public web discovery, privacy-by-design, image provenance, copyright discovery, ethical vision" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="DIGITAL YOUR — Privacy-Conscious Reverse Image Discovery" />
+    <meta property="og:description" content="Discover where an image appears across public sources without invasive surveillance or biometric tracking." />
+    <meta property="og:type" content="website" />
 
-      <div class="nav-actions">
-        <!-- API Mode Indicator -->
-        <div class="status-pill" id="engineStatusPill">
-          <span class="status-dot"></span>
-          <span id="engineStatusText">Connecting...</span>
-        </div>
+    <!-- Google Fonts: Plus Jakarta Sans, Inter, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
-        <!-- Theme Toggle -->
-        <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
-          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="5" />
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-          </svg>
-          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Application Container -->
-  <main class="main-container">
-    <!-- Hero Header -->
-    <section class="hero-section">
-      <h1 class="hero-title">Discover What You're Looking At</h1>
-      <p class="hero-subtitle">
-        Upload any image to find its source, identify anime characters, verify public figures, discover products, and explore visual matches across the open web.
-      </p>
-    </section>
-
-    <!-- Upload & Query Card -->
-    <section class="upload-section">
-      <div class="upload-card" id="dropZone">
-        <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif" style="display: none;" />
-
-        <!-- Unselected State: Drop Area -->
-        <div class="drop-content" id="dropContent">
-          <div class="upload-icon-wrapper">
-            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="17 8 12 3 7 8" />
-              <line x1="12" y1="3" x2="12" y2="15" />
-            </svg>
-          </div>
-          <h3 class="upload-prompt">Drag & drop your image here</h3>
-          <p class="upload-subtext">Supports PNG, JPG, WEBP up to 20MB</p>
-          <button class="btn btn-secondary" id="browseBtn" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <polyline points="21 15 16 10 5 21" />
-            </svg>
-            Browse Files
-          </button>
-        </div>
-
-        <!-- Selected State: Image Preview & Actions (Hidden initially) -->
-        <div class="preview-container" id="previewContainer" style="display: none;">
-          <div class="preview-image-wrapper">
-            <img id="previewImage" alt="Upload Preview" />
-            <div class="scanning-laser" id="scanningLaser" style="display: none;"></div>
-          </div>
-          <div class="preview-meta">
-            <div class="file-details">
-              <span class="file-name" id="previewFileName">image.jpg</span>
-              <span class="file-specs" id="previewFileSpecs">1024 × 768 · 450 KB</span>
-            </div>
-            <div class="preview-actions">
-              <button class="btn btn-ghost btn-sm" id="changeImageBtn" type="button">Change Image</button>
-              <button class="btn btn-primary" id="searchBtn" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-                Search with Google Lens
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Demo Presets -->
-      <div class="demo-presets-bar">
-        <span class="presets-label">Quick Sample Presets:</span>
-        <button class="preset-chip" data-preset="demonslayer" type="button">🗡️ Demon Slayer Anime</button>
-        <button class="preset-chip" data-preset="jujutsu" type="button">🔮 Jujutsu Kaisen</button>
-        <button class="preset-chip" data-preset="elena" type="button">🎓 Academic Researcher</button>
-        <button class="preset-chip" data-preset="landmark" type="button">🗼 Landmark / Artwork</button>
-      </div>
-    </section>
-
-    <!-- Animated Loading & Progress Section -->
-    <section class="loading-section" id="loadingSection" style="display: none;">
-      <div class="loading-card">
-        <div class="loading-spinner-ring"></div>
-        <h3 class="loading-title" id="loadingStatusText">Uploading image to Google Lens...</h3>
-        <p class="loading-subtext" id="loadingSubtext">Extracting perceptual embeddings and cross-referencing visual databases</p>
-        <div class="progress-bar-container">
-          <div class="progress-bar-fill" id="progressBarFill"></div>
-        </div>
-        <div class="stages-indicator">
-          <span class="stage-item active" id="stage1">Ingestion</span>
-          <span class="stage-arrow">→</span>
-          <span class="stage-item" id="stage2">Visual Analysis</span>
-          <span class="stage-arrow">→</span>
-          <span class="stage-item" id="stage3">Lens Query</span>
-          <span class="stage-arrow">→</span>
-          <span class="stage-item" id="stage4">Results Extraction</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Error Alert Section -->
-    <section class="alert-section" id="errorSection" style="display: none;">
-      <div class="alert-card alert-error">
-        <div class="alert-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
-        </div>
-        <div class="alert-content">
-          <h4 class="alert-title" id="errorTitle">Search Request Failed</h4>
-          <p class="alert-message" id="errorMessage">An unexpected error occurred while communicating with the reverse image search engine.</p>
-        </div>
-        <button class="btn btn-secondary btn-sm" id="errorRetryBtn">Retry Search</button>
-      </div>
-    </section>
-
-    <!-- Results Dashboard Section -->
-    <section class="results-dashboard" id="resultsDashboard" style="display: none;">
-      <!-- Dashboard Top Header Bar -->
-      <div class="dashboard-header">
-        <div class="dashboard-header-left">
-          <h2 class="dashboard-title">Search Findings</h2>
-          <span class="results-count-badge" id="resultsCountBadge">0 Matches Found</span>
-          <span class="verified-badge">✓ Google Lens Verified</span>
-        </div>
-        <div class="dashboard-header-right">
-          <a class="btn btn-secondary btn-sm" id="openLensDirectBtn" target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-              <polyline points="15 3 21 3 21 9" />
-              <line x1="10" y1="14" x2="21" y2="3" />
-            </svg>
-            Open in Google Lens
-          </a>
-        </div>
-      </div>
-
-      <!-- Demo Mode Notice Callout -->
-      <div class="demo-notice-banner" id="demoNoticeBanner" style="display: none;">
-        <div class="demo-notice-icon">💡</div>
-        <div class="demo-notice-text">
-          <strong>Demo Fallback Active:</strong> Displaying high-fidelity contextual simulation. Add your <code>SERPAPI_API_KEY</code> to <code>.env</code> for live web crawls.
-        </div>
-      </div>
-
-      <!-- 1. Primary Match / Knowledge Graph Hero Card -->
-      <div class="knowledge-graph-card" id="knowledgeGraphCard" style="display: none;">
-        <div class="kg-media">
-          <img id="kgThumbnail" alt="Recognized Entity" />
-        </div>
-        <div class="kg-info">
-          <div class="kg-meta-row">
-            <span class="kg-type-badge" id="kgSubtitle">Recognized Subject</span>
-            <span class="kg-confidence-pill">100% Best Match</span>
-          </div>
-          <h3 class="kg-title" id="kgTitle">Entity Name</h3>
-          <p class="kg-description" id="kgDescription">Detailed entity information identified by Google Lens.</p>
-          
-          <!-- Entity Attributes -->
-          <div class="kg-attributes-grid" id="kgAttributesGrid"></div>
-
-          <!-- Official Link -->
-          <div class="kg-actions">
-            <a class="btn btn-primary btn-sm" id="kgOfficialLink" target="_blank" rel="noopener noreferrer">
-              View Official Subject Page
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                <polyline points="15 3 21 3 21 9" />
-                <line x1="10" y1="14" x2="21" y2="3" />
-              </svg>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- OCR Detected Text Banner (if present) -->
-      <div class="ocr-text-banner" id="ocrBanner" style="display: none;">
-        <span class="ocr-label">Detected Typography in Image:</span>
-        <code class="ocr-text" id="ocrText"></code>
-      </div>
-
-      <!-- 2. Visual Matches & Web Sources Section -->
-      <div class="visual-matches-section">
-        <div class="section-title-row">
-          <h3 class="section-heading">Visual Matches & Public Web Sources</h3>
-          <span class="section-hint">High-confidence web appearances and related editorial sources</span>
-        </div>
-
-        <div class="matches-grid" id="matchesGrid">
-          <!-- Dynamically populated cards -->
-        </div>
-      </div>
-
-      <!-- Legal & Privacy Notice Footer -->
-      <footer class="results-footer-notice">
-        <p>
-          <strong>Privacy & Verification Notice:</strong> Visual similarity is an algorithmic estimate based on public web indexing. Results depend on source availability, crawler access, and search provider coverage. Never infer private personal records or sensitive personal attributes.
-        </p>
-      </footer>
-    </section>
-  </main>
-
-  <script src="app.js"></script>
-</body>
+    <!-- Favicon Icon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 7V5a2 2 0 0 1 2-2h2'/><path d='M17 3h2a2 2 0 0 1 2 2v2'/><path d='M21 17v2a2 2 0 0 1-2 2h-2'/><path d='M7 21H5a2 2 0 0 1-2-2v-2'/><circle cx='12' cy='12' r='3'/></svg>" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
