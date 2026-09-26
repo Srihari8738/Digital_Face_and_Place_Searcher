@@ -1,56 +1,22 @@
-export = fetch;
+/**
+ * Tests if the specified path is absolute.
+ * @param {string} path Path to test
+ * @returns {boolean} `true` if path is absolute
+ */
+export function isAbsolute(path: string): boolean;
 
 /**
- * Node-style callback as used by {@link util.fetch}.
- * @typedef FetchCallback
- * @type {function}
- * @param {?Error} error Error, if any, otherwise `null`
- * @param {string} [contents] File contents, if there hasn't been an error
- * @returns {undefined}
+ * Normalizes the specified path.
+ * @param {string} path Path to normalize
+ * @returns {string} Normalized path
  */
-type FetchCallback = (error: Error, contents?: string) => void;
+export function normalize(path: string): string;
 
 /**
- * Options as used by {@link util.fetch}.
- * @typedef IFetchOptions
- * @type {Object}
- * @property {boolean} [binary=false] Whether expecting a binary response
- * @property {boolean} [xhr=false] If `true`, forces the use of XMLHttpRequest
+ * Resolves the specified include path against the specified origin path.
+ * @param {string} originPath Path to the origin file
+ * @param {string} includePath Include path relative to origin path
+ * @param {boolean} [alreadyNormalized=false] `true` if both paths are already known to be normalized
+ * @returns {string} Path to the include file
  */
-
-interface IFetchOptions {
-    binary?: boolean;
-    xhr?: boolean;
-}
-
-/**
- * Fetches the contents of a file.
- * @memberof util
- * @param {string} filename File path or url
- * @param {IFetchOptions} options Fetch options
- * @param {FetchCallback} callback Callback function
- * @returns {undefined}
- */
-declare function fetch(filename: string, options: IFetchOptions, callback: FetchCallback): void;
-
-/**
- * Fetches the contents of a file.
- * @name util.fetch
- * @function
- * @param {string} path File path or url
- * @param {FetchCallback} callback Callback function
- * @returns {undefined}
- * @variation 2
- */
-declare function fetch(path: string, callback: FetchCallback): void;
-
-/**
- * Fetches the contents of a file.
- * @name util.fetch
- * @function
- * @param {string} path File path or url
- * @param {IFetchOptions} [options] Fetch options
- * @returns {Promise<string|Uint8Array>} Promise
- * @variation 3
- */
-declare function fetch(path: string, options?: IFetchOptions): Promise<(string|Uint8Array)>;
+export function resolve(originPath: string, includePath: string, alreadyNormalized?: boolean): string;

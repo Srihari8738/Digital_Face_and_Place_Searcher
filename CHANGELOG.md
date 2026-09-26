@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.1.1](https://github.com/protobufjs/protobuf.js/compare/fetch-v1.1.0...fetch-v1.1.1) (2026-05-17)
+## [1.1.2](https://github.com/protobufjs/protobuf.js/compare/inquire-v1.1.1...inquire-v1.1.2) (2026-05-17)
 
 
 ### Bug Fixes
