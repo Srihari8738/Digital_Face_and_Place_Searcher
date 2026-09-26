@@ -1,22 +1,24 @@
 /**
- * Tests if the specified path is absolute.
- * @param {string} path Path to test
- * @returns {boolean} `true` if path is absolute
+ * Calculates the UTF8 byte length of a string.
+ * @param {string} string String
+ * @returns {number} Byte length
  */
-export function isAbsolute(path: string): boolean;
+export function length(string: string): number;
 
 /**
- * Normalizes the specified path.
- * @param {string} path Path to normalize
- * @returns {string} Normalized path
+ * Reads UTF8 bytes as a string.
+ * @param {Uint8Array} buffer Source buffer
+ * @param {number} start Source start
+ * @param {number} end Source end
+ * @returns {string} String read
  */
-export function normalize(path: string): string;
+export function read(buffer: Uint8Array, start: number, end: number): string;
 
 /**
- * Resolves the specified include path against the specified origin path.
- * @param {string} originPath Path to the origin file
- * @param {string} includePath Include path relative to origin path
- * @param {boolean} [alreadyNormalized=false] `true` if both paths are already known to be normalized
- * @returns {string} Path to the include file
+ * Writes a string as UTF8 bytes.
+ * @param {string} string Source string
+ * @param {Uint8Array} buffer Destination buffer
+ * @param {number} offset Destination offset
+ * @returns {number} Bytes written
  */
-export function resolve(originPath: string, includePath: string, alreadyNormalized?: boolean): string;
+export function write(string: string, buffer: Uint8Array, offset: number): number;
