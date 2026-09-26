@@ -1,23 +1,55 @@
-module.exports = class EventEmitterError extends Error {
-  constructor(msg, fn = EventEmitterError, opts = {}) {
-    const { code = fn.name } = opts
+const binding = require('../binding')
 
-    super(`${code}: ${msg}`, opts)
+module.exports = class FileError extends Error {
+  constructor(msg, opts = {}) {
+    const { code, operation = null, path = null, destination = null, fd = -1 } = opts
+
+    if (operation !== null) msg += describe(operation, opts)
+
+    super(`${code}: ${msg}`)
 
     this.code = code
 
-    if (Error.captureStackTrace) Error.captureStackTrace(this, fn)
+    if (operation !== null) this.operation = operation
+    if (path !== null) this.path = path
+    if (destination !== null) this.destination = destination
+    if (fd !== -1) this.fd = fd
   }
 
   get name() {
-    return 'EventEmitterError'
+    return 'FileError'
   }
 
-  static OPERATION_ABORTED(cause, msg = 'Operation aborted') {
-    return new EventEmitterError(msg, EventEmitterError.OPERATION_ABORTED, { cause })
+  // For Node.js compatibility
+  get errno() {
+    return binding.errnos[this.code]
   }
 
-  static UNHANDLED_ERROR(cause, msg = 'Unhandled error') {
-    return new EventEmitterError(msg, EventEmitterError.UNHANDLED_ERROR, { cause })
+  // For Node.js compatibility
+  get syscall() {
+    return this.operation
   }
+
+  // For Node.js compatibility
+  get dest() {
+    return this.destination
+  }
+}
+
+function describe(operation, opts) {
+  const { path = null, destination = null, fd = -1 } = opts
+
+  let result = `, ${operation}`
+
+  if (path !== null) {
+    result += ` ${JSON.stringify(path)}`
+
+    if (destination !== null) {
+      result += ` -> ${JSON.stringify(destination)}`
+    }
+  } else if (fd !== -1) {
+    result += ` ${fd}`
+  }
+
+  return result
 }
