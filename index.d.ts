@@ -1,116 +1,144 @@
-/**
- * License for programmatically and manually incorporated
- * documentation aka. `JSDoc` from https://github.com/nodejs/node/tree/master/doc
- *
- * Copyright Node.js contributors. All rights reserved.
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- */
+import { BufferEncoding } from './runtime'
 
-// NOTE: These definitions support Node.js and TypeScript 5.8+.
+export function isBuffer(value: unknown): value is Uint8Array
 
-// Reference required TypeScript libraries:
-/// <reference lib="es2020" />
-/// <reference lib="esnext.disposable" />
-/// <reference lib="esnext.float16" />
+export function isEncoding(encoding: unknown): encoding is BufferEncoding
 
-// Definitions for Node.js modules specific to TypeScript 5.7+:
-/// <reference path="globals.typedarray.d.ts" />
-/// <reference path="buffer.buffer.d.ts" />
+export function alloc(size: number, fill: string, encoding?: BufferEncoding): Uint8Array
+export function alloc(size: number, fill?: Uint8Array | number | boolean): Uint8Array
 
-// Definitions for Node.js modules that are not specific to any version of TypeScript:
-/// <reference path="globals.d.ts" />
-/// <reference path="web-globals/abortcontroller.d.ts" />
-/// <reference path="web-globals/blob.d.ts" />
-/// <reference path="web-globals/console.d.ts" />
-/// <reference path="web-globals/crypto.d.ts" />
-/// <reference path="web-globals/domexception.d.ts" />
-/// <reference path="web-globals/encoding.d.ts" />
-/// <reference path="web-globals/events.d.ts" />
-/// <reference path="web-globals/fetch.d.ts" />
-/// <reference path="web-globals/importmeta.d.ts" />
-/// <reference path="web-globals/messaging.d.ts" />
-/// <reference path="web-globals/navigator.d.ts" />
-/// <reference path="web-globals/performance.d.ts" />
-/// <reference path="web-globals/storage.d.ts" />
-/// <reference path="web-globals/streams.d.ts" />
-/// <reference path="web-globals/timers.d.ts" />
-/// <reference path="web-globals/url.d.ts" />
-/// <reference path="assert.d.ts" />
-/// <reference path="assert/strict.d.ts" />
-/// <reference path="async_hooks.d.ts" />
-/// <reference path="buffer.d.ts" />
-/// <reference path="child_process.d.ts" />
-/// <reference path="cluster.d.ts" />
-/// <reference path="console.d.ts" />
-/// <reference path="constants.d.ts" />
-/// <reference path="crypto.d.ts" />
-/// <reference path="dgram.d.ts" />
-/// <reference path="diagnostics_channel.d.ts" />
-/// <reference path="dns.d.ts" />
-/// <reference path="dns/promises.d.ts" />
-/// <reference path="domain.d.ts" />
-/// <reference path="events.d.ts" />
-/// <reference path="ffi.d.ts" />
-/// <reference path="fs.d.ts" />
-/// <reference path="fs/promises.d.ts" />
-/// <reference path="http.d.ts" />
-/// <reference path="http2.d.ts" />
-/// <reference path="https.d.ts" />
-/// <reference path="inspector.d.ts" />
-/// <reference path="inspector.generated.d.ts" />
-/// <reference path="inspector/promises.d.ts" />
-/// <reference path="module.d.ts" />
-/// <reference path="net.d.ts" />
-/// <reference path="os.d.ts" />
-/// <reference path="path.d.ts" />
-/// <reference path="path/posix.d.ts" />
-/// <reference path="path/win32.d.ts" />
-/// <reference path="perf_hooks.d.ts" />
-/// <reference path="process.d.ts" />
-/// <reference path="punycode.d.ts" />
-/// <reference path="querystring.d.ts" />
-/// <reference path="quic.d.ts" />
-/// <reference path="readline.d.ts" />
-/// <reference path="readline/promises.d.ts" />
-/// <reference path="repl.d.ts" />
-/// <reference path="sea.d.ts" />
-/// <reference path="sqlite.d.ts" />
-/// <reference path="stream.d.ts" />
-/// <reference path="stream/consumers.d.ts" />
-/// <reference path="stream/iter.d.ts" />
-/// <reference path="stream/promises.d.ts" />
-/// <reference path="stream/web.d.ts" />
-/// <reference path="string_decoder.d.ts" />
-/// <reference path="test.d.ts" />
-/// <reference path="test/reporters.d.ts" />
-/// <reference path="timers.d.ts" />
-/// <reference path="timers/promises.d.ts" />
-/// <reference path="tls.d.ts" />
-/// <reference path="trace_events.d.ts" />
-/// <reference path="tty.d.ts" />
-/// <reference path="url.d.ts" />
-/// <reference path="util.d.ts" />
-/// <reference path="util/types.d.ts" />
-/// <reference path="v8.d.ts" />
-/// <reference path="vfs.d.ts" />
-/// <reference path="vm.d.ts" />
-/// <reference path="wasi.d.ts" />
-/// <reference path="worker_threads.d.ts" />
-/// <reference path="zlib.d.ts" />
-/// <reference path="zlib/iter.d.ts" />
+export function allocUnsafe(size: number): Uint8Array
+
+export function allocUnsafeSlow(size: number): Uint8Array
+
+export function byteLength(
+  string: ArrayBufferView | ArrayBufferLike | string,
+  encoding?: BufferEncoding
+): number
+
+export function compare(a: Uint8Array, b: Uint8Array): number
+
+export function concat<T extends Uint8Array>(buffers: T[], totalLength?: number): Uint8Array
+
+export function copy(
+  source: Uint8Array,
+  target: Uint8Array,
+  targetStart?: number,
+  start?: number,
+  end?: number
+): number
+
+export function equals(a: Uint8Array, b: Uint8Array): boolean
+
+export function fill<T extends Uint8Array>(buffer: T, value: string, encoding?: BufferEncoding): T
+export function fill<T extends Uint8Array>(
+  buffer: T,
+  value: string,
+  offset?: number,
+  encoding?: BufferEncoding
+): T
+export function fill<T extends Uint8Array>(
+  buffer: T,
+  value: string,
+  offset?: number,
+  end?: number,
+  encoding?: BufferEncoding
+): T
+export function fill<T extends Uint8Array>(
+  buffer: T,
+  value: Uint8Array | number | boolean,
+  offset?: number,
+  end?: number
+): T
+
+export function from(value: Iterable<number>): Uint8Array
+export function from(value: ArrayLike<number>): Uint8Array
+export function from(value: string, encodingOrOffset?: BufferEncoding): Uint8Array
+export function from(value: ArrayBufferLike, encodingOrOffset?: number, length?: number): Uint8Array
+
+export function includes(buffer: Uint8Array, value: string, encoding?: BufferEncoding): boolean
+export function includes(
+  buffer: Uint8Array,
+  value: string,
+  offset?: number,
+  encoding?: BufferEncoding
+): boolean
+export function includes(
+  buffer: Uint8Array,
+  value: Uint8Array | number | boolean,
+  offset?: number
+): boolean
+
+export function indexOf(buffer: Uint8Array, value: string, encoding?: BufferEncoding): number
+export function indexOf(
+  buffer: Uint8Array,
+  value: string,
+  byfeOffset?: number,
+  encoding?: BufferEncoding
+): number
+export function indexOf(
+  buffer: Uint8Array,
+  value: Uint8Array | number | boolean,
+  byfeOffset?: number
+): number
+
+export function lastIndexOf(buffer: Uint8Array, value: string, encoding?: BufferEncoding): number
+export function lastIndexOf(
+  buffer: Uint8Array,
+  value: string,
+  offset?: number,
+  encoding?: BufferEncoding
+): number
+export function lastIndexOf(
+  buffer: Uint8Array,
+  value: Uint8Array | number | boolean,
+  offset?: number
+): number
+
+export function swap16<T extends Uint8Array>(buffer: T): T
+export function swap32<T extends Uint8Array>(buffer: T): T
+export function swap64<T extends Uint8Array>(buffer: T): T
+
+export function toBuffer(buffer: Uint8Array): Uint8Array
+
+export function toString(
+  buffer: Uint8Array,
+  encoding?: BufferEncoding,
+  start?: number,
+  end?: number
+): string
+
+export function toHex(buffer: Uint8Array, start?: number, end?: number): string
+
+export function write(buffer: Uint8Array, string: string, encoding?: BufferEncoding): number
+export function write(
+  buffer: Uint8Array,
+  string: string,
+  offset?: number,
+  encoding?: BufferEncoding
+): number
+export function write(
+  buffer: Uint8Array,
+  string: string,
+  offset?: number,
+  length?: number,
+  encoding?: BufferEncoding
+): number
+
+export function readDoubleBE(buffer: Uint8Array, offset?: number): number
+export function readDoubleLE(buffer: Uint8Array, offset?: number): number
+export function readFloatBE(buffer: Uint8Array, offset?: number): number
+export function readFloatLE(buffer: Uint8Array, offset?: number): number
+export function readInt32BE(buffer: Uint8Array, offset?: number): number
+export function readInt32LE(buffer: Uint8Array, offset?: number): number
+export function readUInt32BE(buffer: Uint8Array, offset?: number): number
+export function readUInt32LE(buffer: Uint8Array, offset?: number): number
+
+export function writeDoubleBE(buffer: Uint8Array, value: number, offset?: number): number
+export function writeDoubleLE(buffer: Uint8Array, value: number, offset?: number): number
+export function writeFloatBE(buffer: Uint8Array, value: number, offset?: number): number
+export function writeFloatLE(buffer: Uint8Array, value: number, offset?: number): number
+export function writeInt32BE(buffer: Uint8Array, value: number, offset?: number): number
+export function writeInt32LE(buffer: Uint8Array, value: number, offset?: number): number
+export function writeUInt32BE(buffer: Uint8Array, value: number, offset?: number): number
+export function writeUInt32LE(buffer: Uint8Array, value: number, offset?: number): number

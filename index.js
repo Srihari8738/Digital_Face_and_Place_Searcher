@@ -1,79 +1,193 @@
-var tape = require("tape");
+function isBuffer(value) {
+  return Buffer.isBuffer(value) || value instanceof Uint8Array
+}
 
-var utf8 = require("..");
+function isEncoding(encoding) {
+  return Buffer.isEncoding(encoding)
+}
 
-var data = require("fs").readFileSync(require.resolve("./data/utf8.txt")),
-    dataStr = data.toString("utf8");
+function alloc(size, fill, encoding) {
+  return Buffer.alloc(size, fill, encoding)
+}
 
-var surrogatePairErr = require("fs").readFileSync(require.resolve("./data/surrogate_pair_bug.txt")),
-    surrogatePairErrStr = data.toString("utf8");
+function allocUnsafe(size) {
+  return Buffer.allocUnsafe(size)
+}
 
-tape.test("utf8", function(test) {
+function allocUnsafeSlow(size) {
+  return Buffer.allocUnsafeSlow(size)
+}
 
-    test.test(test.name + " - length", function(test) {
-        test.equal(utf8.length(""), 0, "should return a byte length of zero for an empty string");
+function byteLength(string, encoding) {
+  return Buffer.byteLength(string, encoding)
+}
 
-        test.equal(utf8.length(dataStr), Buffer.byteLength(dataStr), "should return the same byte length as node buffers");
+function compare(a, b) {
+  return Buffer.compare(a, b)
+}
 
-        test.end();
-    });
+function concat(buffers, totalLength) {
+  return Buffer.concat(buffers, totalLength)
+}
 
-    test.test(test.name + " - read", function(test) {
-        var comp = utf8.read([], 0, 0);
-        test.equal(comp, "", "should decode an empty buffer to an empty string");
+function copy(source, target, targetStart, start, end) {
+  return toBuffer(source).copy(target, targetStart, start, end)
+}
 
-        comp = utf8.read(data, 0, data.length);
-        test.equal(comp, data.toString("utf8"), "should decode to the same byte data as node buffers");
+function equals(a, b) {
+  return toBuffer(a).equals(b)
+}
 
-        var longData = Buffer.concat([data, data, data, data]);
-        comp = utf8.read(longData, 0, longData.length);
-        test.equal(comp, longData.toString("utf8"), "should decode to the same byte data as node buffers (long)");
+function fill(buffer, value, offset, end, encoding) {
+  return toBuffer(buffer).fill(value, offset, end, encoding)
+}
 
-        var chunkData = new Buffer(data.toString("utf8").substring(0, 8192));
-        comp = utf8.read(chunkData, 0, chunkData.length);
-        test.equal(comp, chunkData.toString("utf8"), "should decode to the same byte data as node buffers (chunk size)");
+function from(value, encodingOrOffset, length) {
+  return Buffer.from(value, encodingOrOffset, length)
+}
 
-        comp = utf8.read(surrogatePairErr, 0, surrogatePairErr.length);
-        test.equal(comp, surrogatePairErr.toString("utf8"), "should decode to the same byte data as node buffers (surrogate pair over chunk)");
+function includes(buffer, value, byteOffset, encoding) {
+  return toBuffer(buffer).includes(value, byteOffset, encoding)
+}
 
-        [
-            [0xC0, 0x80],             // U+0000 encoded as two bytes
-            [0xE0, 0x81, 0xBF],       // U+007F encoded as three bytes
-            [0xF0, 0x80, 0x9F, 0xBF], // U+07FF encoded as four bytes
-            [0xF4, 0x90, 0x80, 0x80]  // >U+10FFFF encoded as four bytes
-        ].forEach(function(bytes) {
-            var overlong = new Buffer(bytes);
-            comp = utf8.read(overlong, 0, overlong.length);
-            test.equal(comp, "\ufffd", "should decode overlong UTF-8 sequences as replacement characters");
-        });
+function indexOf(buffer, value, byfeOffset, encoding) {
+  return toBuffer(buffer).indexOf(value, byfeOffset, encoding)
+}
 
-        var longMultibyteStr = "\u20ac\u00df\u7a7a\u03bb\ud835\udd4f".repeat(20000); // 3-byte, 2-byte and surrogate-pair code points
-        var longMultibyte = Buffer.from(longMultibyteStr, "utf8");
-        comp = utf8.read(longMultibyte, 0, longMultibyte.length);
-        test.equal(comp, longMultibyteStr, "should decode a large multibyte string spanning many flush boundaries");
+function lastIndexOf(buffer, value, byteOffset, encoding) {
+  return toBuffer(buffer).lastIndexOf(value, byteOffset, encoding)
+}
 
-        test.end();
-    });
+function swap16(buffer) {
+  return toBuffer(buffer).swap16()
+}
 
-    test.test(test.name + " - write", function(test) {
-        var buf = new Buffer(0);
-        test.equal(utf8.write("", buf, 0), 0, "should encode an empty string to an empty buffer");
+function swap32(buffer) {
+  return toBuffer(buffer).swap32()
+}
 
-        var len = utf8.length(dataStr);
-        buf = new Buffer(len);
-        test.equal(utf8.write(dataStr, buf, 0), len, "should encode to exactly " + len + " bytes");
+function swap64(buffer) {
+  return toBuffer(buffer).swap64()
+}
 
-        test.equal(buf.length, data.length, "should encode to a buffer length equal to that of node buffers");
+function toBuffer(buffer) {
+  if (Buffer.isBuffer(buffer)) return buffer
+  return Buffer.from(buffer.buffer, buffer.byteOffset, buffer.byteLength)
+}
 
-        for (var i = 0; i < buf.length; ++i) {
-            if (buf[i] !== data[i]) {
-                test.fail("should encode to the same buffer data as node buffers (offset " + i + ")");
-                return;
-            }
-        }
-        test.pass("should encode to the same buffer data as node buffers");
+function toString(buffer, encoding, start, end) {
+  return toBuffer(buffer).toString(encoding, start, end)
+}
 
-        test.end();
-    });
+function toHex(buffer, start, end) {
+  return toBuffer(buffer).toString('hex', start, end)
+}
 
-});
+function write(buffer, string, offset, length, encoding) {
+  return toBuffer(buffer).write(string, offset, length, encoding)
+}
+
+function readDoubleBE(buffer, offset) {
+  return toBuffer(buffer).readDoubleBE(offset)
+}
+
+function readDoubleLE(buffer, offset) {
+  return toBuffer(buffer).readDoubleLE(offset)
+}
+
+function readFloatBE(buffer, offset) {
+  return toBuffer(buffer).readFloatBE(offset)
+}
+
+function readFloatLE(buffer, offset) {
+  return toBuffer(buffer).readFloatLE(offset)
+}
+
+function readInt32BE(buffer, offset) {
+  return toBuffer(buffer).readInt32BE(offset)
+}
+
+function readInt32LE(buffer, offset) {
+  return toBuffer(buffer).readInt32LE(offset)
+}
+
+function readUInt32BE(buffer, offset) {
+  return toBuffer(buffer).readUInt32BE(offset)
+}
+
+function readUInt32LE(buffer, offset) {
+  return toBuffer(buffer).readUInt32LE(offset)
+}
+
+function writeDoubleBE(buffer, value, offset) {
+  return toBuffer(buffer).writeDoubleBE(value, offset)
+}
+
+function writeDoubleLE(buffer, value, offset) {
+  return toBuffer(buffer).writeDoubleLE(value, offset)
+}
+
+function writeFloatBE(buffer, value, offset) {
+  return toBuffer(buffer).writeFloatBE(value, offset)
+}
+
+function writeFloatLE(buffer, value, offset) {
+  return toBuffer(buffer).writeFloatLE(value, offset)
+}
+
+function writeInt32BE(buffer, value, offset) {
+  return toBuffer(buffer).writeInt32BE(value, offset)
+}
+
+function writeInt32LE(buffer, value, offset) {
+  return toBuffer(buffer).writeInt32LE(value, offset)
+}
+
+function writeUInt32BE(buffer, value, offset) {
+  return toBuffer(buffer).writeUInt32BE(value, offset)
+}
+
+function writeUInt32LE(buffer, value, offset) {
+  return toBuffer(buffer).writeUInt32LE(value, offset)
+}
+
+module.exports = {
+  isBuffer,
+  isEncoding,
+  alloc,
+  allocUnsafe,
+  allocUnsafeSlow,
+  byteLength,
+  compare,
+  concat,
+  copy,
+  equals,
+  fill,
+  from,
+  includes,
+  indexOf,
+  lastIndexOf,
+  swap16,
+  swap32,
+  swap64,
+  toBuffer,
+  toString,
+  toHex,
+  write,
+  readDoubleBE,
+  readDoubleLE,
+  readFloatBE,
+  readFloatLE,
+  readInt32BE,
+  readInt32LE,
+  readUInt32BE,
+  readUInt32LE,
+  writeDoubleBE,
+  writeDoubleLE,
+  writeFloatBE,
+  writeFloatLE,
+  writeInt32BE,
+  writeInt32LE,
+  writeUInt32BE,
+  writeUInt32LE
+}
