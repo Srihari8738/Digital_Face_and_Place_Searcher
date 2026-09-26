@@ -1,32 +1,18 @@
-# bare-fs
+# bare-path
 
-Native file system operations for Bare. The API closely follows that of the Node.js `fs` module.
+Path manipulation library for JavaScript.
 
 ```
-npm i bare-fs
+npm i bare-path
 ```
 
 ## Usage
 
 ```js
-const fs = require('bare-fs')
+const path = require('bare-path')
 
-const fd = await fs.open('hello.txt')
-
-const buffer = Buffer.alloc(1024)
-
-try {
-  const length = await fs.read(fd, buffer)
-
-  console.log('Read', length, 'bytes')
-} finally {
-  await fs.close(fd)
-}
+path.join('foo', 'bar') // foo/bar on posix, foo\bar on windows
 ```
-
-## API
-
-See the [`bare-fs` reference](https://docs.pears.com/reference/bare/modules/bare-fs).
 
 ## License
 
